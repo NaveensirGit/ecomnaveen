@@ -20,7 +20,7 @@ app.post('/send-email', async (req, res) => {
 
   let mailOptions = {
     from: email,
-    to: 'yourgmail@gmail.com',
+    to: 'naveensirji25@gmail.com',
     subject: `New Contact from ${firstName} ${lastName}`,
     text: message
   };
