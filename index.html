@@ -170,6 +170,7 @@
 </section>
 
 <!-- Featured Categories Section -->
+<!-- Featured Categories Section -->
 <section class="bg-gray-50 dark:bg-gray-800 py-16">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     
@@ -179,41 +180,42 @@
     </div>
 
     <div class="grid gap-8 md:grid-cols-3">
+      
       <!-- Category 1 -->
-      <div class="bg-white dark:bg-gray-900 rounded-lg shadow hover:shadow-md transition overflow-hidden">
-        <img src="https://picsum.photos/seed/clothing/400/250" alt="Clothing"
-             class="w-full h-48 object-cover">
-        <div class="p-6 text-center">
-          <h3 class="text-xl font-semibold text-gray-800 dark:text-white">Clothing</h3>
-          <p class="mt-2 text-gray-600 dark:text-gray-400">Stylish apparel for all seasons and occasions.</p>
-          <a href="#shop" class="mt-4 inline-block text-blue-600 dark:text-blue-400 hover:underline">Shop Now</a>
-        </div>
-      </div>
+<div class="bg-white dark:bg-gray-900 rounded-lg shadow hover:shadow-md transition overflow-hidden">
+  <img src="images/a.jpg"
+       alt="Clothing"
+       class="lightbox-trigger cursor-pointer rounded-lg shadow"
+       data-large="images/a.jpg"
+       data-index="0"
+       data-group="featured-categories">
+</div>
 
-      <!-- Category 2 -->
-      <div class="bg-white dark:bg-gray-900 rounded-lg shadow hover:shadow-md transition overflow-hidden">
-        <img src="https://picsum.photos/seed/shoes/400/250" alt="Footwear"
-             class="w-full h-48 object-cover">
-        <div class="p-6 text-center">
-          <h3 class="text-xl font-semibold text-gray-800 dark:text-white">Footwear</h3>
-          <p class="mt-2 text-gray-600 dark:text-gray-400">Comfortable and trendy shoes for everyone.</p>
-          <a href="#shop" class="mt-4 inline-block text-blue-600 dark:text-blue-400 hover:underline">Shop Now</a>
-        </div>
-      </div>
+<!-- Category 2 -->
+<div class="bg-white dark:bg-gray-900 rounded-lg shadow hover:shadow-md transition overflow-hidden">
+  <img src="https://picsum.photos/seed/shoes/400/250"
+       alt="Footwear"
+       class="lightbox-trigger cursor-pointer rounded-lg shadow"
+       data-large="https://picsum.photos/seed/shoes/400/250"
+       data-index="1"
+       data-group="featured-categories">
+</div>
 
-      <!-- Category 3 -->
-      <div class="bg-white dark:bg-gray-900 rounded-lg shadow hover:shadow-md transition overflow-hidden">
-        <img src="https://picsum.photos/seed/accessories/400/250" alt="Accessories"
-             class="w-full h-48 object-cover">
-        <div class="p-6 text-center">
-          <h3 class="text-xl font-semibold text-gray-800 dark:text-white">Accessories</h3>
-          <p class="mt-2 text-gray-600 dark:text-gray-400">Complete your look with modern accessories.</p>
-          <a href="#shop" class="mt-4 inline-block text-blue-600 dark:text-blue-400 hover:underline">Shop Now</a>
-        </div>
-      </div>
+<!-- Category 3 -->
+<div class="bg-white dark:bg-gray-900 rounded-lg shadow hover:shadow-md transition overflow-hidden">
+  <img src="https://picsum.photos/seed/accessories/400/250"
+       alt="Accessories"
+       class="lightbox-trigger cursor-pointer rounded-lg shadow"
+       data-large="https://picsum.photos/seed/accessories/400/250"
+       data-index="2"
+       data-group="featured-categories">
+</div>
+
+
     </div>
   </div>
 </section>
+
 <!-- Featured Products Section -->
 
 <section class="bg-white dark:bg-gray-900 py-16" id="shop">
@@ -710,7 +712,7 @@ document.addEventListener('DOMContentLoaded', function () {
   let currentIndex = 0;
   let currentImages = [];
 
-  // Open lightbox with current image group
+  // Open lightbox with image array
   function openLightbox(imagesArray, index) {
     currentImages = imagesArray;
     currentIndex = index;
@@ -719,26 +721,44 @@ document.addEventListener('DOMContentLoaded', function () {
     lightbox.classList.add('flex');
   }
 
-  // Show image at currentIndex
+  // Show current image
   function showCurrentImage() {
-    const src = currentImages[currentIndex];
+    const src = currentImages[currentIndex] || '';
     lightboxImg.src = src;
   }
 
-  // Add click listeners to all lightbox-trigger images
+  // Lightbox triggers
   document.querySelectorAll('.lightbox-trigger').forEach(img => {
     img.addEventListener('click', function () {
-      const productWrapper = img.closest('[x-data]'); // Alpine component scope
-      const alpineData = Alpine && Alpine.evaluate ? Alpine.evaluate(productWrapper, 'images') : [];
+      const productWrapper = img.closest('[x-data]');
+      const group = img.getAttribute('data-group');
 
-      const images = Array.isArray(alpineData) ? alpineData : [];
+      let images = [];
+      let index = 0;
 
-      const index = parseInt(img.dataset.index) || 0;
+     // Case 1: Alpine component
+if (productWrapper && window.Alpine && Alpine.evaluate) {
+  images = Alpine.evaluate(productWrapper, 'images') || [];
+  index = parseInt(img.dataset.index) || 0;
+
+// Case 2: Static grouped images (like featured categories)
+} else if (group) {
+  const groupImages = document.querySelectorAll(`.lightbox-trigger[data-group="${group}"]`);
+  images = Array.from(groupImages).map(el => el.src);  // ✅ use src directly
+  index = Array.from(groupImages).indexOf(img);
+
+// Case 3: Standalone image
+} else {
+  images = [img.getAttribute('data-large') || img.src];
+  index = 0;
+}
+
+
       openLightbox(images, index);
     });
   });
 
-  // Prev/Next/Close handlers
+  // Navigation
   lightboxNext.addEventListener('click', () => {
     currentIndex = (currentIndex + 1) % currentImages.length;
     showCurrentImage();
@@ -749,6 +769,7 @@ document.addEventListener('DOMContentLoaded', function () {
     showCurrentImage();
   });
 
+  // Close lightbox
   lightboxClose.addEventListener('click', closeLightbox);
   lightbox.addEventListener('click', (e) => {
     if (e.target === lightbox) closeLightbox();
@@ -763,8 +784,6 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 </script>
-
-
 
 
 <script>
