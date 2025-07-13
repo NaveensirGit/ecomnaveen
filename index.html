@@ -242,7 +242,8 @@
 
         <div class="relative w-full h-48 overflow-hidden rounded">
           <template x-for="(img, index) in images" :key="index">
-            <img x-show="i === index" x-transition :src="img" :data-large="img" class="lightbox-trigger cursor-pointer rounded-lg shadow">
+            <img x-show="i === index" x-transition :src="img" :data-large="img" 
+    :data-index="index" class="lightbox-trigger cursor-pointer rounded-lg shadow">
           </template>
           <button @click="i = (i - 1 + images.length) % images.length"
                   class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/70 dark:bg-gray-700/70 px-2 py-1 rounded-full">‹</button>
@@ -275,7 +276,7 @@
 
         <div class="relative w-full h-48 overflow-hidden rounded">
           <template x-for="(img, index) in images" :key="index">
-            <img x-show="i === index" x-transition :src="img" :data-large="img" class="lightbox-trigger cursor-pointer rounded-lg shadow">
+            <img x-show="i === index" x-transition :src="img" :data-index="index" :data-large="img" class="lightbox-trigger cursor-pointer rounded-lg shadow">
           </template>
           <button @click="i = (i - 1 + images.length) % images.length"
                   class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/70 dark:bg-gray-700/70 px-2 py-1 rounded-full">‹</button>
@@ -308,7 +309,7 @@
 
         <div class="relative w-full h-48 overflow-hidden rounded">
           <template x-for="(img, index) in images" :key="index">
-            <img x-show="i === index" x-transition :src="img" :data-large="img" class="lightbox-trigger cursor-pointer rounded-lg shadow">
+            <img x-show="i === index" x-transition :src="img" :data-index="index" :data-large="img" class="lightbox-trigger cursor-pointer rounded-lg shadow">
           </template>
           <button @click="i = (i - 1 + images.length) % images.length"
                   class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/70 dark:bg-gray-700/70 px-2 py-1 rounded-full">‹</button>
@@ -341,7 +342,7 @@
 
         <div class="relative w-full h-48 overflow-hidden rounded">
           <template x-for="(img, index) in images" :key="index">
-            <img x-show="i === index" x-transition :src="img" :data-large="img" class="lightbox-trigger cursor-pointer rounded-lg shadow">
+            <img x-show="i === index" x-transition :src="img" :data-index="index" :data-large="img" class="lightbox-trigger cursor-pointer rounded-lg shadow">
           </template>
           <button @click="i = (i - 1 + images.length) % images.length"
                   class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/70 dark:bg-gray-700/70 px-2 py-1 rounded-full">‹</button>
@@ -705,50 +706,64 @@ document.addEventListener('DOMContentLoaded', function () {
   const lightboxClose = document.getElementById('lightbox-close');
   const lightboxNext = document.getElementById('lightbox-next');
   const lightboxPrev = document.getElementById('lightbox-prev');
-  const triggers = Array.from(document.querySelectorAll('.lightbox-trigger'));
 
   let currentIndex = 0;
+  let currentImages = [];
 
-  // Show Image in Lightbox
-  function openLightbox(index) {
+  // Open lightbox with current image group
+  function openLightbox(imagesArray, index) {
+    currentImages = imagesArray;
     currentIndex = index;
-    const img = triggers[currentIndex];
-    const largeSrc = img.getAttribute('data-large') || img.src;
-    lightboxImg.src = largeSrc;
+    showCurrentImage();
     lightbox.classList.remove('hidden');
     lightbox.classList.add('flex');
   }
 
-  triggers.forEach((img, index) => {
-    img.addEventListener('click', () => openLightbox(index));
-  });
-
-  // Close Lightbox
-  function closeLightbox() {
-    lightbox.classList.add('hidden');
-    lightbox.classList.remove('flex');
-    lightboxImg.src = '';
+  // Show image at currentIndex
+  function showCurrentImage() {
+    const src = currentImages[currentIndex];
+    lightboxImg.src = src;
   }
 
-  lightboxClose.addEventListener('click', closeLightbox);
+  // Add click listeners to all lightbox-trigger images
+  document.querySelectorAll('.lightbox-trigger').forEach(img => {
+    img.addEventListener('click', function () {
+      const productWrapper = img.closest('[x-data]'); // Alpine component scope
+      const alpineData = Alpine && Alpine.evaluate ? Alpine.evaluate(productWrapper, 'images') : [];
 
+      const images = Array.isArray(alpineData) ? alpineData : [];
+
+      const index = parseInt(img.dataset.index) || 0;
+      openLightbox(images, index);
+    });
+  });
+
+  // Prev/Next/Close handlers
+  lightboxNext.addEventListener('click', () => {
+    currentIndex = (currentIndex + 1) % currentImages.length;
+    showCurrentImage();
+  });
+
+  lightboxPrev.addEventListener('click', () => {
+    currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
+    showCurrentImage();
+  });
+
+  lightboxClose.addEventListener('click', closeLightbox);
   lightbox.addEventListener('click', (e) => {
     if (e.target === lightbox) closeLightbox();
   });
 
-  // Next Image
-  lightboxNext.addEventListener('click', () => {
-    currentIndex = (currentIndex + 1) % triggers.length;
-    openLightbox(currentIndex);
-  });
-
-  // Previous Image
-  lightboxPrev.addEventListener('click', () => {
-    currentIndex = (currentIndex - 1 + triggers.length) % triggers.length;
-    openLightbox(currentIndex);
-  });
+  function closeLightbox() {
+    lightbox.classList.add('hidden');
+    lightbox.classList.remove('flex');
+    lightboxImg.src = '';
+    currentImages = [];
+    currentIndex = 0;
+  }
 });
 </script>
+
 
 
 
