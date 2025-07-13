@@ -17,6 +17,7 @@
     }
   </script>
 
+
     <style type="text/css">html {
   scroll-behavior: smooth;
 }</style>
@@ -229,8 +230,8 @@
       <div x-data="{
         i: 0,
         images: [
-          'https://picsum.photos/seed/product1a/400/300',
-          'https://picsum.photos/seed/product1b/400/300'
+          'images/a.jpg',
+          'images/b.jpg'
         ],
         init() {
           setInterval(() => {
@@ -250,8 +251,8 @@
         </div>
 
         <div class="mt-4">
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Denim Jacket</h3>
-          <p class="text-blue-600 dark:text-blue-400 font-bold mt-1">$59.99</p>
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Cycle</h3>
+          <p class="text-blue-600 dark:text-blue-400 font-bold mt-1">$100.99</p>
           <div class="flex items-center text-yellow-400 mt-2">★★★★☆</div>
           <button class="mt-4 w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
                   @click="modalOpen = true; productCode = 'Product 1'">Buy Now</button>
