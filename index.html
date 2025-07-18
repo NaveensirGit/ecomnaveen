@@ -437,20 +437,23 @@
       Join our newsletter and be the first to know about new collections, sales, and exclusive deals.
     </p>
 
-    <form class="mt-8 sm:flex sm:justify-center gap-4">
-      <input 
-        type="email"
-        placeholder="Enter your email"
-        required
-        class="w-full sm:w-auto px-5 py-3 rounded-lg text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-      <button 
-        type="submit"
-        class="mt-4 sm:mt-0 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-      >
-        Subscribe
-      </button>
-    </form>
+    <!-- subscribe form -->
+    <form class="mt-8 sm:flex sm:justify-center gap-4" id="sub-form" method="POST" action="https://hindbazar.com/subscribe.php">
+  <input 
+    type="email"
+    name="email"
+    placeholder="Enter your email"
+    required
+    class="w-full sm:w-auto px-5 py-3 rounded-lg text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+  />
+  <button 
+    type="submit"
+    class="mt-4 sm:mt-0 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+  >
+    Subscribe
+  </button>
+</form>
+
 
     <p class="mt-4 text-sm text-gray-500 dark:text-gray-400">
       We respect your privacy. Unsubscribe anytime.
