@@ -1,39 +1,35 @@
-const express = require('express');
-const nodemailer = require('nodemailer');
-const cors = require('cors');
-const app = express();
-const port = 3000;
+// api/send-email.js
+import fetch from 'node-fetch';
 
-app.use(cors());
-app.use(express.json());
-app.post('/send-email', async (req, res) => {
+export default async function handler(req, res) {
   const { firstName, lastName, email, message } = req.body;
 
-  // Email Config
-  let transporter = nodemailer.createTransport({
-    service: 'gmail', // Or your SMTP service
-    auth: {
-      user: 'legalshops@gmail.com',
-      pass: 'skugupta'
-    }
-  });
-
-  let mailOptions = {
-    from: email,
-    to: 'naveensirji25@gmail.com',
-    subject: `New Contact from ${firstName} ${lastName}`,
-    text: message
-  };
-
   try {
-    await transporter.sendMail(mailOptions);
-    res.send('Email sent successfully!');
-  } catch (error) {
-    console.error('Error sending email:', error);
-    res.status(500).send('Failed to send email.');
-  }
-});
+    const response = await fetch('https://send.api.mailtrap.io/api/send', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer YOUR_API_TOKEN',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        from: {
+          email: "your-inbox@inbox.mailtrap.io",
+          name: "Legal Shops"
+        },
+        to: [
+          {
+            email: "naveensirji25@gmail.com"
+          }
+        ],
+        subject: `New message from ${firstName} ${lastName}`,
+        text: message
+      })
+    });
 
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
-});
+    const result = await response.json();
+    res.status(200).json({ success: true, result });
+  } catch (error) {
+    console.error('Email API Error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+}
