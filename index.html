@@ -659,33 +659,34 @@
     </div>
 
     <!-- Form -->
-    <form class="space-y-4" >
-      <div>
-      <input type="hidden" name="product code" :value="productCode" />
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
-        <input type="text" placeholder="Your name"
-          class="w-full px-4 py-2 border rounded-md bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:ring focus:ring-blue-500 focus:outline-none">
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Mobile No</label>
-        <input type="tel" placeholder="1234567890"
-          class="w-full px-4 py-2 border rounded-md bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:ring focus:ring-blue-500 focus:outline-none">
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
-        <input type="email" placeholder="you@example.com"
-          class="w-full px-4 py-2 border rounded-md bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:ring focus:ring-blue-500 focus:outline-none">
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Address</label>
-        <textarea rows="3" placeholder="Your address"
-          class="w-full px-4 py-2 border rounded-md bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:ring focus:ring-blue-500 focus:outline-none"></textarea>
-      </div>
-      <div class="flex justify-end pt-2">
-        <button type="submit"
-          class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition">Submit</button>
-      </div>
-    </form>
+    <form class="space-y-4" id="order-form" method="POST" action="https://hindbazar.com/order.php">
+  <div>
+    <input type="hidden" name="product_code" :value="productCode" />
+    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
+    <input type="text" name="name" placeholder="Your name"
+      class="w-full px-4 py-2 border rounded-md bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600">
+  </div>
+  <div>
+    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Mobile No</label>
+    <input type="tel" name="mobile" placeholder="1234567890"
+      class="w-full px-4 py-2 border rounded-md bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600">
+  </div>
+  <div>
+    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
+    <input type="email" name="email" placeholder="you@example.com"
+      class="w-full px-4 py-2 border rounded-md bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600">
+  </div>
+  <div>
+    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Address</label>
+    <textarea name="address" rows="3" placeholder="Your address"
+      class="w-full px-4 py-2 border rounded-md bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600"></textarea>
+  </div>
+  <div class="flex justify-end pt-2">
+    <button type="submit"
+      class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition">Submit</button>
+  </div>
+</form>
+
   </div>
 </div>
 
@@ -701,6 +702,29 @@
 </div>
 
 
+<!-- order form script -->
+<script>
+document.getElementById('order-form').addEventListener('submit', async function (e) {
+  e.preventDefault();
+  const formData = new FormData(this);
+
+  const response = await fetch('https://hindbazar.com/order.php', {
+    method: 'POST',
+    body: formData
+  });
+
+  const result = await response.json();
+  if (response.ok) {
+    alert(result.success);
+  } else {
+    alert(result.error);
+  }
+});
+</script>
+
+
+
+<!-- contect form script -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   const lightbox = document.getElementById('lightbox');
@@ -792,7 +816,7 @@ if (productWrapper && window.Alpine && Alpine.evaluate) {
 
   const formData = new FormData(this);
 
-  const response = await fetch('https://hindbazar.com/sendmail.php', {
+  const response = await fetch('https://hindbazar.com/contact.php', {
     method: 'POST',
     body: formData
   });
