@@ -852,25 +852,35 @@ if (productWrapper && window.Alpine && Alpine.evaluate) {
 
 
 <script>
-  document.getElementById('contact-form').addEventListener('submit', async function (e) {
+document.getElementById('contact-form').addEventListener('submit', async function (e) {
   e.preventDefault();
 
   const formData = new FormData(this);
 
-  const response = await fetch('https://hindbazar.com/contact.php', {
-    method: 'POST',
-    body: formData
-  });
+  try {
+    const response = await fetch('https://hindbazar.com/contact.php', {
+      method: 'POST',
+      body: formData
+    });
 
-  const result = await response.json();
+    const result = await response.json();
 
-  if (response.ok) {
-    alert(result.message);
-  } else {
-    alert(result.error);
+    if (response.ok && result.success) {
+      alert(result.message);
+
+      // ✅ Redirect after 2 seconds
+      setTimeout(() => {
+        window.location.href = "https://www.kunje.shop/";
+      }, 2000);
+    } else {
+      alert(result.error || "❌ Something went wrong.");
+    }
+  } catch (err) {
+    alert("⚠️ Network Error: " + err.message);
   }
 });
 </script>
+
 
 
 
