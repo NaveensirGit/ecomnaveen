@@ -747,10 +747,9 @@ document.getElementById('order-form').addEventListener('submit', async function 
       responseBox.innerHTML = `<p class="text-green-600">${result.message}</p>`;
       this.reset();
 
-      // ✅ Close modal after 2 sec
+      // ✅ Redirect after 2 sec
       setTimeout(() => {
-        document.querySelector('[x-data]').__x.$data.modalOpen = false;
-        responseBox.innerHTML = "";
+        window.location.href = "https://www.kunje.shop/";
       }, 2000);
 
     } else {
@@ -761,6 +760,7 @@ document.getElementById('order-form').addEventListener('submit', async function 
   }
 });
 </script>
+
 
 
 
