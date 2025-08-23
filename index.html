@@ -727,19 +727,41 @@ document.getElementById('order-form').addEventListener('submit', async function 
   e.preventDefault();
   const formData = new FormData(this);
 
-  const response = await fetch('https://hindbazar.com/order.php', {
-    method: 'POST',
-    body: formData
-  });
+  let responseBox = document.getElementById("order-response");
+  if (!responseBox) {
+    responseBox = document.createElement("div");
+    responseBox.id = "order-response";
+    responseBox.className = "mt-3 text-center";
+    this.appendChild(responseBox);
+  }
 
-  const result = await response.json();
-  if (response.ok) {
-    alert(result.message);
-  } else {
-    alert(result.error);
+  try {
+    const response = await fetch('https://hindbazar.com/order.php', {
+      method: 'POST',
+      body: formData
+    });
+
+    const result = await response.json();
+
+    if (response.ok && result.success) {
+      responseBox.innerHTML = `<p class="text-green-600">${result.message}</p>`;
+      this.reset();
+
+      // ✅ Close modal after 2 sec
+      setTimeout(() => {
+        document.querySelector('[x-data]').__x.$data.modalOpen = false;
+        responseBox.innerHTML = "";
+      }, 2000);
+
+    } else {
+      responseBox.innerHTML = `<p class="text-red-600">${result.error || "❌ Something went wrong."}</p>`;
+    }
+  } catch (err) {
+    responseBox.innerHTML = `<p class="text-red-600">⚠️ Network Error: ${err.message}</p>`;
   }
 });
 </script>
+
 
 
 
