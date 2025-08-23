@@ -843,7 +843,7 @@ if (productWrapper && window.Alpine && Alpine.evaluate) {
   const result = await response.json();
 
   if (response.ok) {
-    alert(result.success);
+    alert(result.message);
   } else {
     alert(result.error);
   }
@@ -867,7 +867,7 @@ document.getElementById('sub-form').addEventListener('submit', async function (e
 
   const result = await response.json();
   if (response.ok) {
-    alert(result.success);
+    alert(result.message);
   } else {
     alert(result.error);
   }
